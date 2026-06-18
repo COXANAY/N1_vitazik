@@ -173,4 +173,26 @@ class OrdemServicoServiceTest {
 
         verify(repository, times(1)).deleteById(1L);
     }
+
+    @Test
+    void deveBuscarOrdensPorStatus() {
+        OrdemServico outraOrdem = OrdemServico.builder()
+                .id(2L)
+                .cliente("Maria Souza")
+                .veiculo("Fiat Uno 2018")
+                .problema("Freios")
+                .status(StatusOrdem.ABERTO)
+                .valor(new BigDecimal("200.00"))
+                .build();
+
+        when(repository.findByStatus(StatusOrdem.ABERTO))
+                .thenReturn(List.of(ordemExemplo, outraOrdem));
+
+        List<OrdemServicoResponseDTO> resultado = service.buscarPorStatus(StatusOrdem.ABERTO);
+
+        assertNotNull(resultado);
+        assertEquals(2, resultado.size());
+        assertTrue(resultado.stream().allMatch(o -> o.getStatus() == StatusOrdem.ABERTO));
+        verify(repository, times(1)).findByStatus(StatusOrdem.ABERTO);
+    }
 }
