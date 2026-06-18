@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class OrdemServicoResponseDTO {
 
     private Long id;
-    private String cliente;
+    private ClienteResponseDTO cliente;
     private String veiculo;
     private String problema;
     private StatusOrdem status;

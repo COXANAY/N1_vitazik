@@ -1,0 +1,15 @@
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\controller\ClienteController.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\controller\OrdemServicoController.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\dto\ClienteRequestDTO.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\dto\ClienteResponseDTO.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\dto\OrdemServicoRequestDTO.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\dto\OrdemServicoResponseDTO.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\exception\ResourceNotFoundException.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\model\Cliente.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\model\OrdemServico.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\model\StatusOrdem.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\OficinaMecanicaApplication.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\repository\ClienteRepository.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\repository\OrdemServicoRepository.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\service\ClienteService.java
+C:\Users\vanio\OneDrive\Documentos\n1_vitazik\oficina-mecanica\src\main\java\com\oficina\service\OrdemServicoService.java

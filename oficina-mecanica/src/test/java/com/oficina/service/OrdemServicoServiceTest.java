@@ -3,8 +3,10 @@ package com.oficina.service;
 import com.oficina.dto.OrdemServicoRequestDTO;
 import com.oficina.dto.OrdemServicoResponseDTO;
 import com.oficina.exception.ResourceNotFoundException;
+import com.oficina.model.Cliente;
 import com.oficina.model.OrdemServico;
 import com.oficina.model.StatusOrdem;
+import com.oficina.repository.ClienteRepository;
 import com.oficina.repository.OrdemServicoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,17 +29,32 @@ class OrdemServicoServiceTest {
     @Mock
     private OrdemServicoRepository repository;
 
+    @Mock
+    private ClienteRepository clienteRepository;
+
+    @Mock
+    private ClienteService clienteService;
+
     @InjectMocks
     private OrdemServicoService service;
 
+    private Cliente clienteExemplo;
     private OrdemServico ordemExemplo;
     private OrdemServicoRequestDTO requestExemplo;
 
     @BeforeEach
     void setUp() {
+        clienteExemplo = Cliente.builder()
+                .id(1L)
+                .nome("João Silva")
+                .cpf("123.456.789-00")
+                .telefone("(11) 99999-9999")
+                .email("joao@email.com")
+                .build();
+
         ordemExemplo = OrdemServico.builder()
                 .id(1L)
-                .cliente("João Silva")
+                .cliente(clienteExemplo)
                 .veiculo("Honda Civic 2020")
                 .problema("Troca de óleo")
                 .status(StatusOrdem.ABERTO)
@@ -45,7 +62,7 @@ class OrdemServicoServiceTest {
                 .build();
 
         requestExemplo = OrdemServicoRequestDTO.builder()
-                .cliente("João Silva")
+                .clienteId(1L)
                 .veiculo("Honda Civic 2020")
                 .problema("Troca de óleo")
                 .status(StatusOrdem.ABERTO)
@@ -55,13 +72,14 @@ class OrdemServicoServiceTest {
 
     @Test
     void deveCriarOrdemComSucesso() {
+        when(clienteRepository.findById(1L)).thenReturn(Optional.of(clienteExemplo));
         when(repository.save(any(OrdemServico.class))).thenReturn(ordemExemplo);
+        when(clienteService.toDTO(clienteExemplo)).thenCallRealMethod();
 
         OrdemServicoResponseDTO resultado = service.criar(requestExemplo);
 
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());
-        assertEquals("João Silva", resultado.getCliente());
         assertEquals(StatusOrdem.ABERTO, resultado.getStatus());
         verify(repository, times(1)).save(any(OrdemServico.class));
     }
@@ -69,6 +87,7 @@ class OrdemServicoServiceTest {
     @Test
     void deveBuscarOrdemPorIdComSucesso() {
         when(repository.findById(1L)).thenReturn(Optional.of(ordemExemplo));
+        when(clienteService.toDTO(clienteExemplo)).thenCallRealMethod();
 
         OrdemServicoResponseDTO resultado = service.buscarPorId(1L);
 
@@ -90,9 +109,13 @@ class OrdemServicoServiceTest {
 
     @Test
     void deveListarTodasAsOrdens() {
+        Cliente cliente2 = Cliente.builder()
+                .id(2L).nome("Maria Souza").cpf("987.654.321-00")
+                .telefone("(11) 88888-8888").build();
+
         OrdemServico outraOrdem = OrdemServico.builder()
                 .id(2L)
-                .cliente("Maria Souza")
+                .cliente(cliente2)
                 .veiculo("Fiat Uno 2018")
                 .problema("Freios")
                 .status(StatusOrdem.EM_ANDAMENTO)
@@ -100,6 +123,7 @@ class OrdemServicoServiceTest {
                 .build();
 
         when(repository.findAll()).thenReturn(List.of(ordemExemplo, outraOrdem));
+        when(clienteService.toDTO(any(Cliente.class))).thenCallRealMethod();
 
         List<OrdemServicoResponseDTO> resultado = service.listarTodos();
 
@@ -112,7 +136,7 @@ class OrdemServicoServiceTest {
     void deveAtualizarOrdemComSucesso() {
         OrdemServico ordemAtualizada = OrdemServico.builder()
                 .id(1L)
-                .cliente("João Silva")
+                .cliente(clienteExemplo)
                 .veiculo("Honda Civic 2020")
                 .problema("Troca de óleo e filtro")
                 .status(StatusOrdem.EM_ANDAMENTO)
@@ -120,7 +144,7 @@ class OrdemServicoServiceTest {
                 .build();
 
         OrdemServicoRequestDTO requestAtualizado = OrdemServicoRequestDTO.builder()
-                .cliente("João Silva")
+                .clienteId(1L)
                 .veiculo("Honda Civic 2020")
                 .problema("Troca de óleo e filtro")
                 .status(StatusOrdem.EM_ANDAMENTO)
@@ -128,7 +152,9 @@ class OrdemServicoServiceTest {
                 .build();
 
         when(repository.findById(1L)).thenReturn(Optional.of(ordemExemplo));
+        when(clienteRepository.findById(1L)).thenReturn(Optional.of(clienteExemplo));
         when(repository.save(any(OrdemServico.class))).thenReturn(ordemAtualizada);
+        when(clienteService.toDTO(clienteExemplo)).thenCallRealMethod();
 
         OrdemServicoResponseDTO resultado = service.atualizar(1L, requestAtualizado);
 

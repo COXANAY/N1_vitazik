@@ -3,8 +3,10 @@ package com.oficina.service;
 import com.oficina.dto.OrdemServicoRequestDTO;
 import com.oficina.dto.OrdemServicoResponseDTO;
 import com.oficina.exception.ResourceNotFoundException;
+import com.oficina.model.Cliente;
 import com.oficina.model.OrdemServico;
 import com.oficina.model.StatusOrdem;
+import com.oficina.repository.ClienteRepository;
 import com.oficina.repository.OrdemServicoRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +17,20 @@ import java.util.stream.Collectors;
 public class OrdemServicoService {
 
     private final OrdemServicoRepository repository;
+    private final ClienteRepository clienteRepository;
+    private final ClienteService clienteService;
 
-    public OrdemServicoService(OrdemServicoRepository repository) {
+    public OrdemServicoService(OrdemServicoRepository repository,
+                               ClienteRepository clienteRepository,
+                               ClienteService clienteService) {
         this.repository = repository;
+        this.clienteRepository = clienteRepository;
+        this.clienteService = clienteService;
     }
 
     public OrdemServicoResponseDTO criar(OrdemServicoRequestDTO dto) {
         OrdemServico ordem = toEntity(dto);
-        OrdemServico salvo = repository.save(ordem);
-        return toDTO(salvo);
+        return toDTO(repository.save(ordem));
     }
 
     public List<OrdemServicoResponseDTO> listarTodos() {
@@ -47,8 +54,7 @@ public class OrdemServicoService {
 
         OrdemServico ordem = toEntity(dto);
         ordem.setId(id);
-        OrdemServico atualizado = repository.save(ordem);
-        return toDTO(atualizado);
+        return toDTO(repository.save(ordem));
     }
 
     public void deletar(Long id) {
@@ -70,8 +76,12 @@ public class OrdemServicoService {
     // --------------------------------
 
     private OrdemServico toEntity(OrdemServicoRequestDTO dto) {
+        Cliente cliente = clienteRepository.findById(dto.getClienteId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Cliente não encontrado com id: " + dto.getClienteId()));
+
         return OrdemServico.builder()
-                .cliente(dto.getCliente())
+                .cliente(cliente)
                 .veiculo(dto.getVeiculo())
                 .problema(dto.getProblema())
                 .status(dto.getStatus())
@@ -82,7 +92,7 @@ public class OrdemServicoService {
     private OrdemServicoResponseDTO toDTO(OrdemServico ordem) {
         return OrdemServicoResponseDTO.builder()
                 .id(ordem.getId())
-                .cliente(ordem.getCliente())
+                .cliente(clienteService.toDTO(ordem.getCliente()))
                 .veiculo(ordem.getVeiculo())
                 .problema(ordem.getProblema())
                 .status(ordem.getStatus())

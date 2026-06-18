@@ -4,6 +4,9 @@ import com.oficina.dto.OrdemServicoRequestDTO;
 import com.oficina.dto.OrdemServicoResponseDTO;
 import com.oficina.model.StatusOrdem;
 import com.oficina.service.OrdemServicoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/ordens")
+@Tag(name = "Ordens de Serviço", description = "Gerenciamento de ordens de serviço da oficina")
 public class OrdemServicoController {
 
     private final OrdemServicoService service;
@@ -20,48 +24,43 @@ public class OrdemServicoController {
         this.service = service;
     }
 
-    // POST /ordens — Criar nova ordem de serviço
     @PostMapping
-    public ResponseEntity<OrdemServicoResponseDTO> criar(@RequestBody OrdemServicoRequestDTO dto) {
-        OrdemServicoResponseDTO resposta = service.criar(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
+    @Operation(summary = "Criar ordem de serviço", description = "Cria uma nova ordem vinculada a um cliente")
+    public ResponseEntity<OrdemServicoResponseDTO> criar(@Valid @RequestBody OrdemServicoRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.criar(dto));
     }
 
-    // GET /ordens — Listar todas as ordens
     @GetMapping
+    @Operation(summary = "Listar ordens", description = "Retorna todas as ordens de serviço")
     public ResponseEntity<List<OrdemServicoResponseDTO>> listarTodos() {
-        List<OrdemServicoResponseDTO> ordens = service.listarTodos();
-        return ResponseEntity.ok(ordens);
+        return ResponseEntity.ok(service.listarTodos());
     }
 
-    // GET /ordens/{id} — Buscar ordem por ID
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar ordem por ID")
     public ResponseEntity<OrdemServicoResponseDTO> buscarPorId(@PathVariable Long id) {
-        OrdemServicoResponseDTO ordem = service.buscarPorId(id);
-        return ResponseEntity.ok(ordem);
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
-    // PUT /ordens/{id} — Atualizar ordem existente
     @PutMapping("/{id}")
+    @Operation(summary = "Atualizar ordem de serviço")
     public ResponseEntity<OrdemServicoResponseDTO> atualizar(
             @PathVariable Long id,
-            @RequestBody OrdemServicoRequestDTO dto) {
-        OrdemServicoResponseDTO atualizado = service.atualizar(id, dto);
-        return ResponseEntity.ok(atualizado);
+            @Valid @RequestBody OrdemServicoRequestDTO dto) {
+        return ResponseEntity.ok(service.atualizar(id, dto));
     }
 
-    // DELETE /ordens/{id} — Deletar ordem
     @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar ordem de serviço")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
 
-    // GET /ordens/status/{status} — Buscar ordens por status
     @GetMapping("/status/{status}")
+    @Operation(summary = "Filtrar ordens por status")
     public ResponseEntity<List<OrdemServicoResponseDTO>> buscarPorStatus(
             @PathVariable StatusOrdem status) {
-        List<OrdemServicoResponseDTO> ordens = service.buscarPorStatus(status);
-        return ResponseEntity.ok(ordens);
+        return ResponseEntity.ok(service.buscarPorStatus(status));
     }
 }
