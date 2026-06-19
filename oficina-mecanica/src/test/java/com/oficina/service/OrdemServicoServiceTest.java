@@ -176,9 +176,13 @@ class OrdemServicoServiceTest {
 
     @Test
     void deveBuscarOrdensPorStatus() {
+        Cliente cliente2 = Cliente.builder()
+                .id(2L).nome("Maria Souza").cpf("987.654.321-00")
+                .telefone("(11) 88888-8888").build();
+
         OrdemServico outraOrdem = OrdemServico.builder()
                 .id(2L)
-                .cliente("Maria Souza")
+                .cliente(cliente2)
                 .veiculo("Fiat Uno 2018")
                 .problema("Freios")
                 .status(StatusOrdem.ABERTO)
